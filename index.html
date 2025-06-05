@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Interactivo: Herramientas de Integración IBM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Un gris azulado más suave */
+            color: #1e293b; /* slate-800 */
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* esquinas más redondeadas */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* sombra más pronunciada */
+        }
+        .question-block {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+        .question-title {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #0f769e; /* Un azul más profundo */
+        }
+        .option-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #cbd5e1; /* slate-300 */
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .option-label:hover {
+            background-color: #e0f2fe; /* sky-100 */
+            border-color: #7dd3fc; /* sky-300 */
+        }
+        .option-label input[type="radio"], .option-label input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        .fill-blank-input {
+            border: 1px solid #cbd5e1; /* slate-300 */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            width: auto; /* Ajustar al contenido */
+            min-width: 150px;
+            margin: 0 0.25rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .fill-blank-input:focus {
+            border-color: #38bdf8; /* sky-500 */
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+            outline: none;
+        }
+        .submit-button {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: block;
+            margin: 2rem auto 0 auto; /* Centrado con margen superior */
+        }
+        .submit-button:hover {
+            background-color: #0284c7; /* sky-600 */
+        }
+        .results-summary {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f0f9ff; /* sky-50 */
+            border: 1px solid #e0f2fe; /* sky-100 */
+            border-radius: 0.5rem;
+        }
+        .results-summary h3 {
+            color: #0f769e;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .correct-answer {
+            border-color: #10b981 !important; /* green-500 */
+            background-color: #ecfdf5; /* green-50 */
+        }
+        .incorrect-answer {
+            border-color: #ef4444 !important; /* red-500 */
+            background-color: #fef2f2; /* red-50 */
+        }
+        .feedback-message {
+            font-size: 0.875rem; /* 14px */
+            margin-top: 0.5rem;
+        }
+        .feedback-message.correct {
+            color: #059669; /* green-600 */
+        }
+        .feedback-message.incorrect {
+            color: #dc2626; /* red-600 */
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .modal-close-button {
+            background-color: #0ea5e9;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-center mb-8 text-sky-700">Cuestionario Interactivo: Herramientas de Integración IBM</h1>
+
+        <form id="quizForm">
+            <!-- Pregunta 1: Selección Múltiple -->
+            <div class="question-block" id="q1">
+                <p class="question-title">1. ¿Cuál es el propósito principal de IBM App Connect Enterprise (ACE)?</p>
+                <label class="option-label"><input type="radio" name="q1" value="a"> a) Gestionar exclusivamente el ciclo de vida de las APIs.</label>
+                <label class="option-label"><input type="radio" name="q1" value="b"> b) Modernizar aplicaciones mainframe Natural y COBOL de forma no invasiva.</label>
+                <label class="option-label"><input type="radio" name="q1" value="c"> c) Ser una plataforma de integración empresarial versátil para conectar aplicaciones y sistemas diversos.</label>
+                <label class="option-label"><input type="radio" name="q1" value="d"> d) Optimizar costos en z/OS mediante la descarga a zIIP.</label>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 2: Verdadero/Falso -->
+            <div class="question-block" id="q2">
+                <p class="question-title">2. IBM API Connect utiliza IBM DataPower para su API Gateway, proporcionando seguridad y control.</p>
+                <label class="option-label"><input type="radio" name="q2" value="true"> Verdadero</label>
+                <label class="option-label"><input type="radio" name="q2" value="false"> Falso</label>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 3: Completar Espacios -->
+            <div class="question-block" id="q3">
+                <p class="question-title">3. La herramienta de IBM para la modernización no invasiva de aplicaciones Natural y COBOL es <input type="text" name="q3_blank1" class="fill-blank-input" placeholder="Nombre de herramienta">.</p>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 4: Selección Múltiple -->
+            <div class="question-block" id="q4">
+                <p class="question-title">4. ¿Qué herramienta de IBM se enfoca principalmente en habilitar API (proveedor/consumidor) para z/OS y optimizar costos mediante la descarga a zIIP?</p>
+                <label class="option-label"><input type="radio" name="q4" value="a"> a) IBM ACE</label>
+                <label class="option-label"><input type="radio" name="q4" value="b"> b) IBM API Connect</label>
+                <label class="option-label"><input type="radio" name="q4" value="c"> c) IBM EntireX</label>
+                <label class="option-label"><input type="radio" name="q4" value="d"> d) IBM z/OS Connect</label>
+                <div class="feedback-message"></div>
+            </div>
+            
+            <!-- Pregunta 5: Verdadero/Falso -->
+            <div class="question-block" id="q5">
+                <p class="question-title">5. EntireX requiere una reescritura completa de las aplicaciones COBOL para exponerlas como servicios.</p>
+                <label class="option-label"><input type="radio" name="q5" value="true"> Verdadero</label>
+                <label class="option-label"><input type="radio" name="q5" value="false"> Falso</label>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 6: Completar Espacios -->
+            <div class="question-block" id="q6">
+                <p class="question-title">6. IBM <input type="text" name="q6_blank1" class="fill-blank-input" placeholder="Nombre"> <input type="text" name="q6_blank2" class="fill-blank-input" placeholder="Herramienta"> es una solución completa para la gestión del ciclo de vida de las API, incluyendo creación, protección, gestión y monetización.</p>
+                <div class="feedback-message"></div>
+            </div>
+            
+            <!-- Pregunta 7: Selección Múltiple (Sinergia) -->
+            <div class="question-block" id="q7">
+                <p class="question-title">7. ¿Cuál es una sinergia común donde z/OS Connect expone APIs del mainframe y otra herramienta las gestiona (seguridad, portal, etc.)?</p>
+                <label class="option-label"><input type="radio" name="q7" value="a"> a) z/OS Connect + ACE</label>
+                <label class="option-label"><input type="radio" name="q7" value="b"> b) z/OS Connect + API Connect</label>
+                <label class="option-label"><input type="radio" name="q7" value="c"> c) z/OS Connect + EntireX</label>
+                <label class="option-label"><input type="radio" name="q7" value="d"> d) ACE + EntireX</label>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 8: Verdadero/Falso -->
+            <div class="question-block" id="q8">
+                <p class="question-title">8. IBM ACE solo es útil para integrar sistemas on-premise y no es adecuado para entornos de nube o SaaS.</p>
+                <label class="option-label"><input type="radio" name="q8" value="true"> Verdadero</label>
+                <label class="option-label"><input type="radio" name="q8" value="false"> Falso</label>
+                <div class="feedback-message"></div>
+            </div>
+
+             <!-- Pregunta 9: Completar Espacios -->
+             <div class="question-block" id="q9">
+                <p class="question-title">9. La característica de <input type="text" name="q9_blank1" class="fill-blank-input" placeholder="Característica"> de z/OS Connect ayuda a reducir costos operativos en el mainframe.</p>
+                <div class="feedback-message"></div>
+            </div>
+
+            <!-- Pregunta 10: Selección Múltiple -->
+            <div class="question-block" id="q10">
+                <p class="question-title">10. ¿Qué herramienta es más adecuada si el principal desafío es la integración y orquestación compleja de mensajes entre una amplia variedad de sistemas heterogéneos (on-premise, nube, SaaS) y se necesitan capacidades ESB?</p>
+                <label class="option-label"><input type="radio" name="q10" value="a"> a) IBM API Connect</label>
+                <label class="option-label"><input type="radio" name="q10" value="b"> b) IBM App Connect Enterprise (ACE)</label>
+                <label class="option-label"><input type="radio" name="q10" value="c"> c) IBM EntireX</label>
+                <label class="option-label"><input type="radio" name="q10" value="d"> d) IBM z/OS Connect</label>
+                <div class="feedback-message"></div>
+            </div>
+
+            <button type="button" class="submit-button" onclick="checkAnswers()">Verificar Respuestas</button>
+        </form>
+
+        <div id="resultsModal" class="modal">
+            <div class="modal-content">
+                <h3 id="modalTitle">Resultados del Cuestionario</h3>
+                <p id="modalScore"></p>
+                <p id="modalMessage"></p>
+                <button onclick="closeModal()" class="modal-close-button">Cerrar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Respuestas correctas
+        const correctAnswers = {
+            q1: "c",
+            q2: "true",
+            q3_blank1: ["entirex"], // Acepta minúsculas y posibles variaciones si es necesario
+            q4: "d",
+            q5: "false",
+            q6_blank1: ["api"],
+            q6_blank2: ["connect"],
+            q7: "b",
+            q8: "false",
+            q9_blank1: ["descarga a ziip", "descarga ziip", "ziip"],
+            q10: "b"
+        };
+
+        function showModal(title, scoreText, messageText) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalScore').textContent = scoreText;
+            document.getElementById('modalMessage').textContent = messageText;
+            document.getElementById('resultsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+
+        // Cierra el modal si se hace clic fuera del contenido
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = 10; // Actualizar si se añaden más preguntas
+            const form = document.getElementById('quizForm');
+
+            // Limpiar feedback previo
+            document.querySelectorAll('.question-block').forEach(block => {
+                block.classList.remove('correct-answer', 'incorrect-answer');
+                const feedback = block.querySelector('.feedback-message');
+                if (feedback) feedback.textContent = '';
+            });
+
+            // Pregunta 1 (Opción Múltiple)
+            const q1Answer = form.q1.value;
+            const q1Block = document.getElementById('q1');
+            const q1Feedback = q1Block.querySelector('.feedback-message');
+            if (q1Answer === correctAnswers.q1) {
+                score++;
+                q1Block.classList.add('correct-answer');
+                q1Feedback.textContent = '¡Correcto!';
+                q1Feedback.className = 'feedback-message correct';
+            } else if (q1Answer) {
+                q1Block.classList.add('incorrect-answer');
+                q1Feedback.textContent = 'Incorrecto. ACE es una plataforma versátil para conectar diversos sistemas.';
+                q1Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q1Block.classList.add('incorrect-answer');
+                 q1Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q1Feedback.className = 'feedback-message incorrect';
+            }
+
+
+            // Pregunta 2 (Verdadero/Falso)
+            const q2Answer = form.q2.value;
+            const q2Block = document.getElementById('q2');
+            const q2Feedback = q2Block.querySelector('.feedback-message');
+            if (q2Answer === correctAnswers.q2) {
+                score++;
+                q2Block.classList.add('correct-answer');
+                q2Feedback.textContent = '¡Correcto!';
+                q2Feedback.className = 'feedback-message correct';
+            } else if (q2Answer) {
+                q2Block.classList.add('incorrect-answer');
+                q2Feedback.textContent = 'Incorrecto. API Connect sí utiliza IBM DataPower.';
+                q2Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q2Block.classList.add('incorrect-answer');
+                 q2Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q2Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 3 (Completar)
+            const q3Answer1 = form.q3_blank1.value.trim().toLowerCase();
+            const q3Block = document.getElementById('q3');
+            const q3Feedback = q3Block.querySelector('.feedback-message');
+            if (correctAnswers.q3_blank1.includes(q3Answer1)) {
+                score++;
+                q3Block.classList.add('correct-answer');
+                q3Feedback.textContent = '¡Correcto!';
+                q3Feedback.className = 'feedback-message correct';
+            } else if (q3Answer1) {
+                q3Block.classList.add('incorrect-answer');
+                q3Feedback.textContent = 'Incorrecto. La herramienta es IBM EntireX.';
+                q3Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q3Block.classList.add('incorrect-answer');
+                 q3Feedback.textContent = 'No has completado el campo.';
+                 q3Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 4 (Opción Múltiple)
+            const q4Answer = form.q4.value;
+            const q4Block = document.getElementById('q4');
+            const q4Feedback = q4Block.querySelector('.feedback-message');
+            if (q4Answer === correctAnswers.q4) {
+                score++;
+                q4Block.classList.add('correct-answer');
+                q4Feedback.textContent = '¡Correcto!';
+                q4Feedback.className = 'feedback-message correct';
+            } else if (q4Answer) {
+                q4Block.classList.add('incorrect-answer');
+                q4Feedback.textContent = 'Incorrecto. IBM z/OS Connect es la herramienta clave para esto.';
+                q4Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q4Block.classList.add('incorrect-answer');
+                 q4Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q4Feedback.className = 'feedback-message incorrect';
+            }
+            
+            // Pregunta 5 (Verdadero/Falso)
+            const q5Answer = form.q5.value;
+            const q5Block = document.getElementById('q5');
+            const q5Feedback = q5Block.querySelector('.feedback-message');
+            if (q5Answer === correctAnswers.q5) {
+                score++;
+                q5Block.classList.add('correct-answer');
+                q5Feedback.textContent = '¡Correcto! EntireX se caracteriza por ser no invasivo.';
+                q5Feedback.className = 'feedback-message correct';
+            } else if (q5Answer) {
+                q5Block.classList.add('incorrect-answer');
+                q5Feedback.textContent = 'Incorrecto. EntireX es no invasivo y no requiere reescritura completa.';
+                q5Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q5Block.classList.add('incorrect-answer');
+                 q5Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q5Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 6 (Completar)
+            const q6Answer1 = form.q6_blank1.value.trim().toLowerCase();
+            const q6Answer2 = form.q6_blank2.value.trim().toLowerCase();
+            const q6Block = document.getElementById('q6');
+            const q6Feedback = q6Block.querySelector('.feedback-message');
+            if (correctAnswers.q6_blank1.includes(q6Answer1) && correctAnswers.q6_blank2.includes(q6Answer2)) {
+                score++;
+                q6Block.classList.add('correct-answer');
+                q6Feedback.textContent = '¡Correcto!';
+                q6Feedback.className = 'feedback-message correct';
+            } else if (q6Answer1 || q6Answer2) {
+                q6Block.classList.add('incorrect-answer');
+                q6Feedback.textContent = 'Incorrecto. La herramienta es IBM API Connect.';
+                q6Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q6Block.classList.add('incorrect-answer');
+                 q6Feedback.textContent = 'No has completado los campos.';
+                 q6Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 7 (Opción Múltiple - Sinergia)
+            const q7Answer = form.q7.value;
+            const q7Block = document.getElementById('q7');
+            const q7Feedback = q7Block.querySelector('.feedback-message');
+            if (q7Answer === correctAnswers.q7) {
+                score++;
+                q7Block.classList.add('correct-answer');
+                q7Feedback.textContent = '¡Correcto!';
+                q7Feedback.className = 'feedback-message correct';
+            } else if (q7Answer) {
+                q7Block.classList.add('incorrect-answer');
+                q7Feedback.textContent = 'Incorrecto. La sinergia es z/OS Connect para exponer y API Connect para gestionar.';
+                q7Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q7Block.classList.add('incorrect-answer');
+                 q7Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q7Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 8 (Verdadero/Falso)
+            const q8Answer = form.q8.value;
+            const q8Block = document.getElementById('q8');
+            const q8Feedback = q8Block.querySelector('.feedback-message');
+            if (q8Answer === correctAnswers.q8) {
+                score++;
+                q8Block.classList.add('correct-answer');
+                q8Feedback.textContent = '¡Correcto! ACE es versátil y soporta entornos híbridos, nube y SaaS.';
+                q8Feedback.className = 'feedback-message correct';
+            } else if (q8Answer) {
+                q8Block.classList.add('incorrect-answer');
+                q8Feedback.textContent = 'Incorrecto. ACE es adecuado para una amplia gama de entornos, incluyendo nube y SaaS.';
+                q8Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q8Block.classList.add('incorrect-answer');
+                 q8Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q8Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 9 (Completar)
+            const q9Answer1 = form.q9_blank1.value.trim().toLowerCase();
+            const q9Block = document.getElementById('q9');
+            const q9Feedback = q9Block.querySelector('.feedback-message');
+            // Permitir varias formas de la respuesta correcta para zIIP
+            if (correctAnswers.q9_blank1.some(term => q9Answer1.includes(term))) {
+                score++;
+                q9Block.classList.add('correct-answer');
+                q9Feedback.textContent = '¡Correcto!';
+                q9Feedback.className = 'feedback-message correct';
+            } else if (q9Answer1) {
+                q9Block.classList.add('incorrect-answer');
+                q9Feedback.textContent = 'Incorrecto. La característica es la descarga a zIIP.';
+                q9Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q9Block.classList.add('incorrect-answer');
+                 q9Feedback.textContent = 'No has completado el campo.';
+                 q9Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Pregunta 10 (Opción Múltiple)
+            const q10Answer = form.q10.value;
+            const q10Block = document.getElementById('q10');
+            const q10Feedback = q10Block.querySelector('.feedback-message');
+            if (q10Answer === correctAnswers.q10) {
+                score++;
+                q10Block.classList.add('correct-answer');
+                q10Feedback.textContent = '¡Correcto!';
+                q10Feedback.className = 'feedback-message correct';
+            } else if (q10Answer) {
+                q10Block.classList.add('incorrect-answer');
+                q10Feedback.textContent = 'Incorrecto. IBM App Connect Enterprise (ACE) es ideal para este escenario.';
+                q10Feedback.className = 'feedback-message incorrect';
+            } else {
+                 q10Block.classList.add('incorrect-answer');
+                 q10Feedback.textContent = 'No has seleccionado una respuesta.';
+                 q10Feedback.className = 'feedback-message incorrect';
+            }
+
+            // Mostrar resultados
+            let message = "";
+            if (score === totalQuestions) {
+                message = "¡Excelente! Has respondido todas las preguntas correctamente.";
+            } else if (score >= totalQuestions * 0.7) {
+                message = "¡Muy bien! Tienes un buen conocimiento sobre las herramientas.";
+            } else if (score >= totalQuestions * 0.5) {
+                message = "¡Bien hecho! Sigue aprendiendo para mejorar tu puntuación.";
+            } else {
+                message = "Necesitas repasar un poco más el material. ¡No te desanimes!";
+            }
+            
+            showModal("Resultados del Cuestionario", `Tu puntuación es: ${score} de ${totalQuestions}`, message);
+        }
+    </script>
+</body>
+</html>
